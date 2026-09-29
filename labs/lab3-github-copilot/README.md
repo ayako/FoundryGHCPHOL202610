@@ -6,7 +6,7 @@
 
 ---
 
-> ⚠️ **シェル環境について**: 本 Lab のコマンド例は **PowerShell** を前提としています。macOS / Linux (bash, zsh) の方は、環境変数の設定 (`$env:VAR="..."` → `export VAR=...`) などを読み替えて実行してください。
+> ⚠️ **シェル環境について**: 本 Lab のコマンド例は **PowerShell** を前提としています。macOS / Linux / Codespaces (bash, zsh) の方は、環境変数の設定 (`$env:VAR="..."` → `export VAR=...`) などを読み替えて実行してください。Codespaces の起動・認証手順は [事前準備](../../setup.md#codespaces-を使う場合任意) を参照してください。
 
 > ❗ **前提**: [Lab 2](../lab2-knowledge-and-multiagent/README.md) が完了し、受付エージェントが動作していること。
 
@@ -89,6 +89,8 @@ cd sunlight-client
 code .
 ```
 
+> 💡 **Codespaces の場合**: リポジトリ配下で `sunlight-client` を作成し、ブラウザ版 VS Code のエクスプローラーからフォルダを開いてください。ターミナルでは `cd sunlight-client` で作業を続けます。
+
 **✅ 成功確認:**
 - VS Code で空のフォルダが開いている
 
@@ -128,6 +130,7 @@ Microsoft Foundry の Agent Service に接続して、対話できる CLI クラ
 - "exit" と入力したら終了する
 - エラー時は分かりやすいメッセージを表示する
 - requirements.txt と .env.example も一緒に作ってください
+- .gitignore を作り、.env、仮想環境、Python のキャッシュを Git の対象から除外してください（.env.example は残す）
 - README.md に使い方を書いてください
 ```
 
@@ -140,8 +143,11 @@ sunlight-client/
 ├── main.py
 ├── requirements.txt
 ├── .env.example
+├── .gitignore
 └── README.md
 ```
+
+> ⚠️ **このハンズオンのルート `.gitignore` は、演習 4 で作る別リポジトリには適用されません。** `sunlight-client` 内にも `.gitignore` が作られていることを確認してください。
 
 > 💡 **一発で完璧なコードは出ません**: それで構いません。**動かして、エラーを見て、直させる** のがこの演習の主題です。
 
@@ -181,6 +187,14 @@ $env:FOUNDRY_PROJECT_ENDPOINT = "https://<リソース名>.services.ai.azure.com
 $env:FOUNDRY_AGENT_ID = "asst_xxxxxxxxxxxx"
 
 # 実行
+python main.py
+```
+
+Codespaces / macOS / Linux の bash では、環境変数を次のように設定します（`pip install` と `az login --use-device-code` も Codespace 内で実行します）。
+
+```bash
+export FOUNDRY_PROJECT_ENDPOINT="https://<リソース名>.services.ai.azure.com/api/projects/<プロジェクト名>"
+export FOUNDRY_AGENT_ID="asst_xxxxxxxxxxxx"
 python main.py
 ```
 
@@ -335,11 +349,14 @@ gh copilot suggest "このフォルダの構成を読み取って、README.md �
 # Git 初期化
 git init
 git add .
+git status --short
 git commit -m "初回コミット: Foundry クライアント"
 
 # GitHub にリポジトリを作成してプッシュ
 gh repo create sunlight-client --private --source=. --push
 ```
+
+> ⚠️ **`git status --short` でコミット対象を確認**し、`.env`、仮想環境、キャッシュ、Azure の認証情報が含まれていたらコミットせず、`.gitignore` を修正してから再度 `git add .` してください。`.env.example` は含めて構いません。
 
 **✅ 成功確認:**
 - `gh repo view --web` でブラウザが開き、リポジトリが表示される

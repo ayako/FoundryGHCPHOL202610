@@ -63,17 +63,17 @@ Azure リソース（Foundry プロジェクト、モデルデプロイ、権限
 ├── README.md                          # このファイル
 ├── setup.md                           # 事前準備
 ├── troubleshooting.md                 # 共通トラブルシューティング
-├── knowledge/                         # ナレッジ用ファイル（当日配布）
-│   ├── 製品FAQ_アクアクリア.docx
-│   ├── 製品FAQ_キュットフォーム.docx
-│   ├── 製品FAQ_モイストヴェール.docx
-│   ├── 製品仕様シート_アクアクリア.pdf
-│   ├── 製品仕様シート_キュットフォーム.pdf
-│   ├── 製品仕様シート_モイストヴェール.pdf
-│   ├── 対応マニュアル.docx
-│   ├── 社内ルール.docx
-│   └── 問い合わせ履歴.csv
+├── .gitignore                         # ローカルの認証情報・生成物を除外
+├── .devcontainer/
+│   └── devcontainer.json              # Codespaces の開発環境
 └── labs/
+    ├── data/                          # Lab 2 の各種マニュアル、ドキュメント、データと検証用質問リスト
+    │   ├── 製品FAQ_*.docx
+    │   ├── 製品仕様シート_*.pdf
+    │   ├── 対応マニュアル.docx
+    │   ├── 社内ルール.docx
+    │   ├── 問い合わせ履歴.csv
+    │   └── 検証用質問リスト.md
     ├── lab1-foundry-basics/
     │   └── README.md
     ├── lab2-knowledge-and-multiagent/
@@ -81,6 +81,8 @@ Azure リソース（Foundry プロジェクト、モデルデプロイ、権限
     └── lab3-github-copilot/
         └── README.md
 ```
+
+Lab 3 を Codespaces で進める場合は、[事前準備](setup.md#codespaces-を使う場合任意) を参照してください。
 
 ## 🚶 進め方
 

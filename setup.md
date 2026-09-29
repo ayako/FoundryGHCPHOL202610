@@ -22,9 +22,11 @@
 https://ai.azure.com/
 ```
 
-> ⚠️ **社内プロキシでブロックされる場合があります。** 開けない場合は事前に情報システム部門にご相談いただくか、当日ゲスト Wi-Fi をご利用ください。
+> ⚠️ **社内プロキシでブロックされる場合があります。** 開けない場合は事前に御社情報システム部門にご相談いただくか、当日は Wi-Fi などをご利用ください。
 
 ### 必須（Lab 3 用）
+
+ローカル PC で Lab 3 を進める場合は、次を準備してください。GitHub Codespaces を使う場合は、下の「Codespaces を使う場合」を参照してください。
 
 | 項目 | 要件 | 確認コマンド |
 |------|------|---------|
@@ -34,6 +36,31 @@ https://ai.azure.com/
 | Azure CLI | 2.60 以上 | `az version` |
 | GitHub CLI | 2.x 以上 | `gh --version` |
 | Git | インストール済み | `git --version` |
+
+### Codespaces を使う場合（任意）
+
+GitHub アカウントに Codespaces と GitHub Copilot を利用できる権限が必要です。Codespaces の利用枠・課金条件は、事前に組織の管理者へ確認してください。Lab 1・2 は引き続きブラウザで Foundry ポータルを使用します。
+
+1. GitHub でこのリポジトリを開き、**Code → Codespaces → Create codespace on main** を選ぶ
+2. コンテナーの初回作成が完了するまで待つ（`.devcontainer/devcontainer.json` で Python 3.11、Azure CLI、GitHub CLI、VS Code 拡張を準備します）
+3. Codespace の VS Code で GitHub Copilot にサインインし、ターミナルで次を確認する
+
+```bash
+python --version
+az version
+gh --version
+gh auth status
+```
+
+4. Lab 3 で Foundry に接続する前に、**当日配布された Azure アカウント**で Codespace 内の Azure CLI にサインインする
+
+```bash
+az login --use-device-code
+```
+
+> ⚠️ **Codespaces の GitHub 認証と Azure 認証は別です。** `gh auth status` が成功しても `az login` は必要です。配布されたテナントを指定する必要がある場合は、講師の案内に従って `az login --tenant <テナントID> --use-device-code` を使用してください。認証情報や `.env` を Git にコミットしないでください。
+
+> 💡 **Codespaces のターミナルは bash です。** Lab 3 の PowerShell の環境変数設定は `$env:NAME = "値"` の代わりに `export NAME="値"` を使います。Lab 3 の作業フォルダは Codespace 内のリポジトリ配下に作り、ブラウザ版 VS Code では `code .` の代わりにエクスプローラーから開いてください。
 
 ---
 
@@ -203,4 +230,4 @@ git config --global http.proxy http://<proxy>:<port>
 
 ## 📞 お問い合わせ
 
-準備で不明な点があれば、開催前日までに講師までご連絡ください。当日朝の対応では、ハンズオンの開始に間に合わない場合があります。
+準備で不明な点があれば、開催前日までに講師までご連絡ください。
