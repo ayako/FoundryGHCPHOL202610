@@ -1,6 +1,6 @@
-# Microsoft Foundry Boot Camp — Day 1 ハンズオン
+# Microsoft Foundry & GitHub Copilot ハンズオン
 
-> Microsoft Foundry でエージェントを作り、社内文書をナレッジとして与え、GitHub Copilot でそれを呼び出すクライアントまで作る、4 時間のハンズオンです。
+> Microsoft Foundry でエージェントを作り、社内文書をナレッジとして与え、GitHub Copilot でそれを呼び出すクライアントまで作るハンズオンです。
 
 架空の日用消費財メーカー「サンライト株式会社 お客様相談室」を題材に、**一次対応エージェント** を段階的に育てていきます。
 
