@@ -6,7 +6,7 @@
 
 ---
 
-> ⚠️ **シェル環境について**: 本 Lab のコマンド例は **PowerShell** を前提としています。macOS / Linux / Codespaces (bash, zsh) の方は、環境変数の設定 (`$env:VAR="..."` → `export VAR=...`) などを読み替えて実行してください。Codespaces の起動・認証手順は [事前準備](../../setup.md#codespaces-を使う場合任意) を参照してください。
+> ⚠️ **Shell 環境について**: 本 Lab のコマンド例は **PowerShell** を前提としています。macOS / Linux / Codespaces (bash, zsh) の方は、環境変数の設定 (`$env:VAR="..."` → `export VAR=...`) などを読み替えて実行してください。Codespaces の起動・認証手順は [事前準備](../../setup.md#codespaces-を使う場合任意) を参照してください。
 
 > ❗ **前提**: [Lab 2](../lab2-knowledge-and-multiagent/README.md) が完了し、受付エージェントが動作していること。
 
@@ -24,8 +24,8 @@
 |------|------|---------|
 | Python | 3.11 以上 | `python --version` |
 | VS Code | GitHub Copilot 拡張機能インストール済み | 拡張機能パネルで確認 |
-| GitHub Copilot | ライセンス割り当て済み | VS Code 右下の Copilot アイコン |
-| GitHub アカウント | 組織に参加済み | `gh auth status` |
+| GitHub Copilot | Copilot Free または有料／組織プランが利用可能 | [登録・制限の確認](../../setup.md#3-github-copilot-のサインイン) |
+| GitHub アカウント | 自分の演習用リポジトリを作成できる（組織への参加は不要） | `gh auth status` |
 | Foundry プロジェクト | Lab 2 完了済み | エージェント一覧に 4 体 |
 
 ### GitHub Copilot のサインイン確認
@@ -40,7 +40,7 @@
 - Copilot アイコンにエラーマーク（斜線）が付いていない
 - 左サイドバーに **Copilot Chat** のアイコンが表示されている
 
-> ⚠️ **サインインできない場合**: 組織のライセンス割り当てが済んでいない可能性があります。講師にお声がけください。
+> ⚠️ **サインインできない場合**: [Copilot Free の登録・サインイン手順](../../setup.md#3-github-copilot-のサインイン) を確認してください。組織プランでは管理者にライセンス・ポリシーを確認します。Free の利用枠や機能制限によって、演習を中断する必要がある場合があります。
 
 ---
 
@@ -241,7 +241,7 @@ python main.py
 | `DefaultAzureCredential failed` | `az login` していない |
 | `404 Not Found` | エンドポイントの末尾にスラッシュが付いている |
 | `ModuleNotFoundError` | `pip install` が未実行 |
-| `PermissionDenied` | ロールが割り当てられていない（講師に連絡） |
+| `PermissionDenied` | Foundry 用アカウントの権限を確認する（[設定手順](../../azure-setup.md#4-foundry-用アカウントに利用権限を設定する)） |
 
 ### 2.2 わざとエラーを作って直させる
 
@@ -426,11 +426,11 @@ gh pr diff | gh copilot explain
 
 ---
 
-## 演習 5: デプロイを見る（デモ）
+## 演習 5: デプロイと運用を学ぶ（任意）
 
-> ⚠️ **この演習は手を動かしません。** 講師のデモをご覧ください。
+> 💡 **この演習は任意です。** 講師付きの場合はデモを見学します。セルフラーニングでは、下記の参考資料で運用時に必要な観点を確認してください。追加の Azure リソースの作成は必須ではありません。
 
-実際の業務では、作ったエージェントをアプリに組み込み、運用します。デモでは次をご紹介します。
+実際の業務では、作ったエージェントをアプリに組み込み、運用します。次の観点を確認します。
 
 | 項目 | 内容 |
 |------|------|
@@ -438,6 +438,11 @@ gh pr diff | gh copilot explain
 | 運用の可視化 | Tracing / Application Insights でトークン数・レイテンシ・ツール呼び出しを追跡 |
 | コスト | 1 回の応答あたりのトークン消費と、月次の概算 |
 | Fabric 連携 | 文書は Foundry、数字は Fabric という役割分担 |
+
+参考資料:
+- [Foundry Agent Service の概要](https://learn.microsoft.com/azure/ai-foundry/agents/overview)
+- [Foundry のトレース](https://learn.microsoft.com/azure/ai-foundry/observability/concepts/trace-agent-concept)
+- [Foundry の料金](https://azure.microsoft.com/pricing/details/ai-foundry/)
 
 ---
 

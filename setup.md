@@ -1,10 +1,10 @@
 # 事前準備
 
-> 当日スムーズに始められるよう、**開催前日まで** に済ませておいてください。所要 15 分程度です。
+> 学習を始める前に済ませてください。PC 側の準備は所要 15 分程度です。Azure／Foundry の作成・権限設定は、別ページの **[Azure サブスクリプションと Foundry の事前設定](azure-setup.md)** に従って準備してください（所要時間は環境や権限の承認状況により異なります）。
 
 ---
 
-## 📋 参加者の事前準備
+## 📋 学習環境の事前準備
 
 ### 必須（Lab 1・Lab 2 用）
 
@@ -12,7 +12,8 @@
 |------|------|---------|
 | ブラウザ | Microsoft Edge または Google Chrome の最新版 | ヘルプ → バージョン情報 |
 | ネットワーク | `ai.azure.com` にアクセスできること | 下記参照 |
-| Azure サブスクリプション / GitHub アカウント | お持ちのアカウントでサインイン、利用できること | 下記 **アクセス確認** を参照 |
+| Foundry 用アカウント | 利用する Azure サブスクリプション・Foundry プロジェクトへのアクセス権があること | [Azure／Foundry の事前設定](azure-setup.md) を参照 |
+| GitHub アカウント | Lab 2 の教材取得と Lab 3 で使用。未登録なら [GitHub の登録画面](https://github.com/signup) で無料アカウントを作成 | https://github.com/ にサインイン |
 
 #### アクセス確認
 
@@ -39,7 +40,7 @@ https://ai.azure.com/
 
 ### Codespaces を使う場合（任意）
 
-GitHub アカウントに Codespaces と GitHub Copilot を利用できる権限が必要です。Codespaces の利用枠・課金条件は、事前に組織の管理者へ確認してください。
+GitHub アカウントに Codespaces と GitHub Copilot を利用できる権限が必要です。個人アカウントでは [Codespaces の無料利用枠と課金条件](https://docs.github.com/ja/billing/managing-billing-for-your-products/managing-billing-for-github-codespaces/about-billing-for-github-codespaces) を確認してください。組織で利用する場合は管理者に確認します。Copilot Free と Codespaces の利用枠は別です。
 (※Lab 1・2 はブラウザで Foundry ポータルを使用しますので、環境は不要です。)
 
 1. GitHub でこのリポジトリを開き、**Code → Codespaces → Create codespace on main** を選ぶ
@@ -53,13 +54,13 @@ gh --version
 gh auth status
 ```
 
-4. Lab 3 で Foundry に接続する前に、**Azure サブスクリプション / Foundry が利用できるアカウント** で Codespace 内の Azure CLI にサインインする
+4. Lab 3 で Foundry に接続する前に、**Foundry 用アカウント** で Codespace 内の Azure CLI にサインインする
 
 ```bash
 az login --use-device-code
 ```
 
-> ⚠️ **Codespaces の GitHub 認証と Azure 認証は別です。** `gh auth status` が成功しても `az login` は必要です。配布されたテナントを指定する必要がある場合は `az login --tenant <テナントID> --use-device-code` を使用してください。認証情報や `.env` を Git にコミットしないでください。
+> ⚠️ **Codespaces の GitHub 認証と Azure 認証は別です。** `gh auth status` が成功しても `az login` は必要です。Foundry 用アカウントのテナントを指定する必要がある場合は `az login --tenant <テナントID> --use-device-code` を使用してください。認証情報や `.env` を Git にコミットしないでください。
 
 > 💡 **Codespaces のターミナルは bash です。** Lab 3 の PowerShell の環境変数設定は `$env:NAME = "値"` の代わりに `export NAME="値"` を使います。Lab 3 の作業フォルダは Codespace 内のリポジトリ配下に作り、ブラウザ版 VS Code では `code .` の代わりにエクスプローラーから開いてください。
 
@@ -96,6 +97,19 @@ Python 3.11.9
 
 ### 3. GitHub Copilot のサインイン
 
+#### GitHub Copilot Free（無償版）を利用する場合
+
+有料プランや組織の Copilot ライセンスがない個人アカウントでは、**Copilot Free** で学習を始められます。
+
+1. GitHub アカウントがなければ [GitHub](https://github.com/signup) で無料アカウントを作成する
+2. VS Code の **Copilot アイコン**（上部またはステータスバー）をクリックし、**Sign up for Copilot Free（Copilot Free にサインアップ）** を選ぶ
+3. ブラウザで **GitHub アカウント** にサインインし、表示される利用条件・認証の案内に従って有効化する
+4. VS Code に戻り、Copilot Chat で質問して応答が返ることを確認する
+
+表示が異なる場合は、[公式の Copilot プラン開始手順](https://docs.github.com/ja/copilot/how-tos/manage-your-account/get-started-with-a-copilot-plan) を参照してください。すでに組織のライセンスや有料プランを利用している場合は、Free に登録し直す必要はありません。Enterprise Managed Users など、Free の対象外のアカウントでは管理者に利用方法を確認してください。
+
+> ⚠️ **Free には利用量・モデル・機能の制限があります。** Lab 3 を最後まで無料枠だけで完了できることは保証されません。[最新のプラン比較](https://docs.github.com/ja/copilot/get-started/plans) と VS Code の利用状況を確認し、上限に達した場合は枠のリセットを待つか、必要に応じて有料プランを検討してください。有料プランの無料試用を選ぶ場合は、期間終了後の課金・解約条件も確認してください。
+
 #### 手順
 
 1. VS Code 右下の **Copilot アイコン** をクリック
@@ -106,7 +120,7 @@ Python 3.11.9
 - Copilot アイコンに斜線（無効マーク）が付いていない
 - 適当な Python ファイルを開いてコメントを書くと、補完が提案される
 
-> ⚠️ **ライセンスが割り当てられていない場合**: 「No access to GitHub Copilot」と表示されます。開催前に講師までご連絡ください。
+> ⚠️ **「No access to GitHub Copilot」と表示される場合**: サインイン中の GitHub アカウントと Copilot のプランを確認し、個人利用では上記の Free の登録、組織利用では管理者へのライセンス・ポリシー確認を行ってください。
 
 ### 4. Azure CLI
 
@@ -161,7 +175,7 @@ github.com
 
 ## ✅ 事前チェックリスト
 
-当日の朝、次のコマンドをすべて実行して、エラーが出ないことを確認してください。
+Lab 3 を始める前に、利用する PC／Codespace で次のコマンドをすべて実行して、エラーが出ないことを確認してください。
 
 ```powershell
 python --version
@@ -176,17 +190,18 @@ gh auth status
 - https://ai.azure.com/
 - https://github.com/
 
+Lab 1・2 の開始前には、[Azure／Foundry のチェックリスト](azure-setup.md#6-lab-を始める前のチェックリスト) に従い、プロジェクト・権限・モデルデプロイを確認してください。
+
 ---
 
-## 💻 当日お持ちいただくもの
+## 💻 学習に必要なもの
 
-| 持ち物 | 備考 |
+| 項目 | 備考 |
 |------|------|
 | ノート PC | 上記のセットアップ済みのもの |
-| 電源アダプタ | 会場に電源をご用意しています |
-| 社員証 | 入館に必要です |
+| 電源・安定したネットワーク | モデルの呼び出しやパッケージの取得に必要 |
 
-> 💡 **ローカル管理者権限があると安心です**: 当日、追加のパッケージインストールが必要になる場合があります。権限がない場合は事前に御社情報システム部門にご確認ください。
+> 💡 **インストール権限を確認してください**: 追加のパッケージインストールが必要になる場合があります。管理対象 PC では事前に情報システム部門にご確認ください。
 
 ---
 
@@ -223,12 +238,12 @@ git config --global http.proxy http://<proxy>:<port>
 
 ### GitHub Copilot にサインインできない
 
-**原因**: 組織のライセンスが割り当てられていない可能性があります。
+**原因**: 別の GitHub アカウントでサインインしている、Copilot Free が利用できない、組織のライセンス・ポリシーに制限がある可能性があります。
 
-**解決方法**: 開催前に講師までご連絡ください。当日の対応では間に合わないことがあります。
+**解決方法**: 上の「GitHub Copilot Free（無償版）を利用する場合」を確認し、利用する GitHub アカウントでサインインし直してください。組織のアカウントでは管理者にライセンス・ポリシーを確認してください。
 
 ---
 
-## 📞 お問い合わせ
+## 📞 解決しない場合
 
-準備で不明な点があれば、開催前日までに講師までご連絡ください。
+まず [トラブルシューティング](troubleshooting.md) と各サービスの公式ドキュメントを確認してください。教材の不明点は、このリポジトリの Issue に、該当する手順とエラーメッセージを添えて報告できます。認証情報や個人情報は含めないでください。
