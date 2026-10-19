@@ -28,23 +28,27 @@
 | GitHub アカウント | 自分の演習用リポジトリを作成できる（組織への参加は不要） | `gh auth status` |
 | Foundry プロジェクト | Lab 2 完了済み | エージェント一覧に 4 体 |
 
-### GitHub Copilot のサインイン確認
+### GitHub Copilot にサインインする
 
 #### 手順
 
 1. VS Code を開く
-2. 画面右下のステータスバーにある **Copilot アイコン** をクリック
-3. サインイン済みであることを確認する
+2. タイトルバーの **Chat** ボタンをクリックしてチャットを開く
+3. 未サインインの場合は、表示される GitHub へのサインイン案内に従う。案内が表示されない場合は、VS Code の **アカウント** メニューから **「Sign in with GitHub to use GitHub Copilot」** を選択する（表示名は UI の言語やバージョンによって異なります）
+4. ブラウザーで、Copilot を利用する GitHub アカウントにサインインし、VS Code からの認証要求を確認して承認する
+5. VS Code に戻り、Copilot の利用開始やプラン選択を求められた場合は画面の案内に従う。すでにサインイン済みの場合は、利用中のアカウントとプランを確認する
 
 **✅ 成功確認:**
-- Copilot アイコンにエラーマーク（斜線）が付いていない
-- 左サイドバーに **Copilot Chat** のアイコンが表示されている
+- VS Code のアカウントメニューで、使用する GitHub アカウントにサインイン済みであることを確認できる
+- チャットで **Ask** を選び、「こんにちは」と送信すると応答が返る
+
+> 💡 **サインイン先は用途ごとに異なります**: ここでは VS Code の GitHub Copilot にサインインします。`gh auth login`（GitHub CLI）、Copilot CLI の認証、`az login`（Azure CLI）は別途必要です。各ツールの演習で、それぞれの認証状態を確認してください。
 
 > ⚠️ **サインインできない場合**: [Copilot Free の登録・サインイン手順](../../setup.md#3-github-copilot-のサインイン) を確認してください。組織プランでは管理者にライセンス・ポリシーを確認します。Free の利用枠や機能制限によって、演習を中断する必要がある場合があります。
 
 ---
 
-## 演習 0: 接続情報を控える (5min)
+## 演習 0: 接続情報を記録する（5 分）
 
 Copilot にコードを書かせる前に、Foundry への接続情報を手元に用意します。
 
@@ -65,16 +69,18 @@ https://<リソース名>.services.ai.azure.com/api/projects/<プロジェクト
 
 > ⚠️ **末尾にスラッシュを付けないでください。** 付いているとエラーになります。
 
-### 0.2 エージェント ID を取得する
+### 0.2 エージェント名を確認する
 
 #### 手順
 
 1. 左ナビゲーションの **「エージェント」** をクリック
 2. **`ReceptionAgent`** を選択する
-3. 設定パネル上部の **エージェント ID**（`asst_` で始まる文字列）をコピーする
+3. 呼び出すエージェントの名前が `ReceptionAgent` であることを確認する
 
 **✅ 成功確認:**
-- `asst_` で始まる文字列が取得できた
+- 呼び出し先のエージェント名 `ReceptionAgent` を確認できた
+
+> ⚠️ **Entra エージェント ID と呼び出し先の指定は別です。** Entra エージェント ID は認証・権限設定に使う ID です。この Lab では、Foundry Agent の Responses API を使い、プロジェクトエンドポイントとエージェント名で呼び出し先を指定します。
 
 ### 0.3 作業フォルダを用意する
 
@@ -102,36 +108,29 @@ code .
 
 #### 手順
 
-1. VS Code の左サイドバーで **Copilot Chat** アイコンをクリック
-2. チャットパネル上部のモード切替から **「エージェント」** (Agent) を選択する
+1. VS Code のタイトルバーにある **Chat** ボタンをクリックしてチャットを開く（Windows／Linux: `Ctrl+Alt+I`、macOS: `Control+Command+I`）
+2. チャット入力欄のモード選択から **「Agent」** を選択する
 
 **✅ 成功確認:**
-- 入力欄の上に「エージェント」と表示されている
+- モード選択に **「Agent」** と表示されている
 - 送信ボタンの横にツールのアイコンが表示される
 
-> 💡 **モードの違い**: 「質問」モードは会話のみ、「編集」モードは指定したファイルを編集します。**「エージェント」モードはファイルの作成・コマンド実行まで自律的に行います。** 今回はこれを使います。
+> 💡 **Ask と Agent の違い**: **Ask** はコードの説明や質問への回答に使います。**Agent** はコードベースを調べ、ファイルの作成・編集やコマンド実行を進めます。今回は **Agent** を使います。ツールや操作によっては承認を求められます。
 
-### 1.2 プロンプトを投げる
+### 1.2 プロンプトを入力して送信する
 
 #### 手順
 
 Copilot Chat の入力欄に、次をそのまま貼り付けて送信します。
 
 ```text
-Microsoft Foundry の Agent Service に接続して、対話できる CLI クライアントを Python で作ってください。
+Microsoft Foundry の `ReceptionAgent` と対話する Python CLI を、次のファイルに実装してください。
 
-要件:
-- azure-ai-projects と azure-identity を使う
-- 認証は DefaultAzureCredential
-- 接続先は環境変数から読む
-  - FOUNDRY_PROJECT_ENDPOINT: プロジェクトのエンドポイント
-  - FOUNDRY_AGENT_ID: 呼び出すエージェントの ID
-- 起動したら対話ループに入り、ユーザーの入力をエージェントに送って応答を表示する
-- "exit" と入力したら終了する
-- エラー時は分かりやすいメッセージを表示する
-- requirements.txt と .env.example も一緒に作ってください
-- .gitignore を作り、.env、仮想環境、Python のキャッシュを Git の対象から除外してください（.env.example は残す）
-- README.md に使い方を書いてください
+- 現行の安定版 `azure-ai-projects` と `azure-identity` を使う。必要な API とバージョンだけ公式ドキュメントで確認し、バージョンを `requirements.txt` に固定する
+- `DefaultAzureCredential` と `AIProjectClient` を使い、Responses API からエージェント名で呼び出す。旧 classic API（`asst_`、threads、runs）は使わない
+- `FOUNDRY_PROJECT_ENDPOINT` と `FOUNDRY_AGENT_NAME` を環境変数から読み、会話を継続できる CLI にする。`exit` で終了し、エラーは分かりやすく表示する
+- `main.py`、`requirements.txt`、`.env.example`、`.gitignore`、`README.md` を作る。.env、`.venv`、Python キャッシュは Git 対象外にする。README に仮想環境の作成・有効化方法を書く
+- 今回は依存関係のインストールや Azure への接続テストをせず、ファイル作成後に要点だけ報告する
 ```
 
 **✅ 期待される挙動:**
@@ -147,9 +146,9 @@ sunlight-client/
 └── README.md
 ```
 
-> ⚠️ **このハンズオンのルート `.gitignore` は、演習 4 で作る別リポジトリには適用されません。** `sunlight-client` 内にも `.gitignore` が作られていることを確認してください。
+> 💡 **最初から完成したコードが生成されるとは限りません。** 実行してエラーを確認し、修正を依頼する過程も、この演習の学習内容です。
 
-> 💡 **一発で完璧なコードは出ません**: それで構いません。**動かして、エラーを見て、直させる** のがこの演習の主題です。
+> 💡 **SDK のバージョンは実施時に確認します**: 最新安定版を使い、必要な API の公式ドキュメントで呼び出し方法を確認してください。SDK の網羅的な調査や Azure への接続テストは、この生成手順では行いません。
 
 ### 1.3 生成されたコードを読む
 
@@ -161,8 +160,8 @@ sunlight-client/
 | 観点 | 確認すること |
 |------|---------|
 | 認証 | `DefaultAzureCredential` を使っているか |
-| 接続 | エンドポイントを環境変数から読んでいるか |
-| 対話 | スレッド（会話）を作成・再利用しているか |
+| 接続 | プロジェクトエンドポイントとエージェント名を環境変数から読んでいるか |
+| 対話 | Responses API を使い、conversation または previous_response_id で会話を継続しているか |
 | 終了 | `exit` で抜けられるか |
 
 > ⚠️ **ここで理解しようとしすぎないでください。** 分からない箇所があれば、次のように Copilot に聞けば答えます。
@@ -176,25 +175,37 @@ sunlight-client/
 #### 手順
 
 ```powershell
-# 依存パッケージをインストール
-pip install -r requirements.txt
+# 仮想環境を作成して有効化
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+
+# 仮想環境に依存パッケージをインストール
+python -m pip install -r requirements.txt
+python -m pip check
 
 # Azure にサインイン
 az login
 
 # 環境変数を設定（演習 0 で控えた値）
 $env:FOUNDRY_PROJECT_ENDPOINT = "https://<リソース名>.services.ai.azure.com/api/projects/<プロジェクト名>"
-$env:FOUNDRY_AGENT_ID = "asst_xxxxxxxxxxxx"
+$env:FOUNDRY_AGENT_NAME = "ReceptionAgent"
 
 # 実行
 python main.py
 ```
 
-Codespaces / macOS / Linux の bash では、環境変数を次のように設定します（`pip install` と `az login --use-device-code` も Codespace 内で実行します）。
+Codespaces / macOS / Linux の bash では、仮想環境を作成・有効化してから実行します。Azure CLI の認証も同じ環境で行ってください。
 
 ```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python -m pip check
+
+az login --use-device-code
+
 export FOUNDRY_PROJECT_ENDPOINT="https://<リソース名>.services.ai.azure.com/api/projects/<プロジェクト名>"
-export FOUNDRY_AGENT_ID="asst_xxxxxxxxxxxx"
+export FOUNDRY_AGENT_NAME="ReceptionAgent"
 python main.py
 ```
 
@@ -212,15 +223,15 @@ python main.py
 >
 ```
 
-> ⚠️ **エラーが出たら、そのまま Copilot に貼ってください。** 次の演習 2 がまさにその作業です。
+> ⚠️ **エラーが出た場合は、メッセージ全文を Copilot に共有してください。** 次の演習 2 で、その手順を実践します。
 
 ---
 
-## 演習 2: エラーを直させる・テストを書かせる (15min)
+## 演習 2: エラーの修正とテストの作成（15 分）
 
-### 2.1 エラーを Copilot に投げる
+### 2.1 エラーを Copilot に伝えて修正を依頼する
 
-演習 1.4 でエラーが出た場合、**エラーメッセージ全文をコピーして** Copilot Chat に貼り付けます。
+演習 1.4 でエラーが出た場合は、**エラーメッセージ全文をコピーして** Copilot Chat に貼り付け、修正を依頼します。
 
 #### 手順
 
@@ -245,15 +256,15 @@ python main.py
 
 ### 2.2 わざとエラーを作って直させる
 
-正常に動いた方は、意図的に壊してから直させてみてください。
+正常に動作した場合は、意図的にエラーを発生させ、Copilot に修正を依頼してください。
 
 #### 手順
 
-1. `main.py` の中で、環境変数名を 1 文字変更する（例: `FOUNDRY_AGENT_ID` → `FOUNDRY_AGENT_IDX`）
+1. `main.py` の中で、環境変数名を 1 文字変更する（例: `FOUNDRY_AGENT_NAME` → `FOUNDRY_AGENT_NAMEX`）
 2. 実行してエラーを出す
-3. エラーを Copilot に貼って直させる
+3. エラーメッセージ全文を Copilot に共有し、修正を依頼する
 
-> 💡 **Copilot はエラーメッセージを読んで原因を特定します。** 人間と同じです。エラーを隠さず、全文を渡すほど精度が上がります。
+> 💡 **Copilot はエラーメッセージをもとに原因を特定します。** エラーを省略せず、全文を共有すると、より適切な修正案を得やすくなります。
 
 ### 2.3 テストコードを書かせる
 
@@ -276,8 +287,8 @@ main.py のユニットテストを pytest で書いてください。
 #### テストを実行する
 
 ```powershell
-pip install pytest
-pytest -v
+python -m pip install pytest
+python -m pytest -v
 ```
 
 **✅ 期待される出力:**
@@ -290,11 +301,11 @@ tests/test_main.py::test_chat_sends_message PASSED
 ========== 3 passed in 0.42s ==========
 ```
 
-> 💡 **テストが落ちたら、それも Copilot に投げてください。** テストを直すのか、実装を直すのかも含めて提案してきます。
+> 💡 **テストが失敗した場合は、エラー内容を Copilot に共有してください。** テストと実装のどちらを修正すべきかも含めて、対応案を提案します。
 
 ---
 
-## 演習 3: Copilot CLI でターミナルから指示する (10min)
+## 演習 3: Copilot CLI でターミナルから指示する（10 分）
 
 VS Code の外でも Copilot は使えます。
 
@@ -339,11 +350,13 @@ gh copilot suggest "このフォルダの構成を読み取って、README.md �
 
 ---
 
-## 演習 4: Issue から PR までを一周する (10min)
+## 演習 4: Issue の作成から PR までを実践する（10 分）
 
 ### 4.1 リポジトリを作成する
 
 #### 手順
+
+> ⚠️ **ここで `sunlight-client` を独立した GitHub リポジトリにします。** このハンズオンのルートにある `.gitignore` は独立したリポジトリには適用されないため、演習 1.2 で `sunlight-client` 内に作成した `.gitignore` を使います。
 
 ```powershell
 # Git 初期化
@@ -361,7 +374,7 @@ gh repo create sunlight-client --private --source=. --push
 **✅ 成功確認:**
 - `gh repo view --web` でブラウザが開き、リポジトリが表示される
 
-### 4.2 Issue を立てる
+### 4.2 Issue を作成する
 
 #### 手順
 
@@ -451,7 +464,7 @@ gh pr diff | gh copilot explain
 | やったこと | 使った技術 |
 |------|------|
 | ゼロからクライアントを生成した | VS Code エージェントモード |
-| エラーを貼って直させた | Copilot Chat |
+| エラー内容を共有して修正を依頼した | Copilot Chat |
 | ユニットテストを書かせた | Copilot Chat / pytest |
 | ターミナルから一括修正を指示した | Copilot CLI |
 | Issue → 実装 → PR を一周した | GitHub CLI / Copilot |
@@ -486,16 +499,16 @@ az account show --query "{name:name, tenantId:tenantId}" -o table
 
 ### エラー: `404 Not Found` / `Resource not found`
 
-**原因**: プロジェクトエンドポイントの末尾にスラッシュが付いている、またはエージェント ID が誤っている。
+**原因**: プロジェクトエンドポイントの末尾にスラッシュが付いている、またはエージェント名が誤っている。
 
 **解決方法**:
 1. エンドポイントの末尾の `/` を削除する
-2. エージェント ID が `asst_` で始まっているか確認する
+2. エージェント名が対象プロジェクト内の名前（`ReceptionAgent`）と一致しているか確認する。Entra エージェント ID や旧 classic API の ID は指定しません
 3. 環境変数が正しく設定されているか確認する
 
 ```powershell
 echo $env:FOUNDRY_PROJECT_ENDPOINT
-echo $env:FOUNDRY_AGENT_ID
+echo $env:FOUNDRY_AGENT_NAME
 ```
 
 ### エラー: `ModuleNotFoundError: No module named 'azure'`
@@ -505,7 +518,7 @@ echo $env:FOUNDRY_AGENT_ID
 **解決方法**:
 
 ```powershell
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 仮想環境を使っている場合は、有効化されているか確認してください。
@@ -516,7 +529,7 @@ pip install -r requirements.txt
 
 **解決方法**: チャットパネル上部のモード切替で **「エージェント」** を選択してください。「質問」モードは回答のみで、ファイル操作は行いません。
 
-### Copilot の提案が的外れ
+### Copilot の提案が意図と異なる
 
 **原因**: 文脈が渡っていない。
 
@@ -537,5 +550,5 @@ pip install -r requirements.txt
 
 **解決方法**:
 1. 1 分ほど待つ
-2. 切り分けのため、環境変数 `FOUNDRY_AGENT_ID` を **`FaqAnswerAgent`** の ID に変更して試す
+2. 切り分けのため、環境変数 `FOUNDRY_AGENT_NAME` を `FaqAnswerAgent` に変更して試す
 3. それで速ければ、マルチエージェント構成による遅延です（正常な挙動です）
