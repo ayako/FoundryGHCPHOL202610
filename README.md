@@ -37,11 +37,11 @@
 
 ```mermaid
 flowchart TB
-    orchestrator["受付エージェント<br>（オーケストレーター）"]
+    orchestrator["ReceptionAgent<br>（受付／オーケストレーター）"]
 
-    faq["FAQ回答エージェント<br><br><b>Knowledge:</b><br>FAQ・仕様シート<br>対応マニュアル<br>社内ルール"]
-    history["履歴分析エージェント<br><br><b>Tool:</b><br>Code Interpreter<br>問い合わせ履歴 200件"]
-    draft["起案エージェント<br><br><b>Instructions:</b><br>エスカレーション<br>報告文の下書き"]
+    faq["FaqAnswerAgent（FAQ回答）<br><br><b>Knowledge:</b><br>FAQ・仕様シート<br>対応マニュアル<br>社内ルール"]
+    history["HistoryAnalysisAgent（履歴分析）<br><br><b>Tool:</b><br>Code Interpreter<br>問い合わせ履歴 200件"]
+    draft["DraftingAgent（起案）<br><br><b>Instructions:</b><br>エスカレーション<br>報告文の下書き"]
 
     orchestrator --> faq
     orchestrator --> history
