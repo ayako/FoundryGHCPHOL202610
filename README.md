@@ -17,9 +17,9 @@
 
 | # | タイトル | 所要 | 内容 |
 |---|------|------|---------|
-| 1 | [Microsoft Foundry でエージェントを作る](labs/lab1-foundry-basics/README.md) | 30min | ポータル操作のみ。エージェント作成、モデル選択、Instructions |
-| 2 | [ナレッジとマルチエージェント](labs/lab2-knowledge-and-multiagent/README.md) | 65min | File Search、Code Interpreter、Connected Agents |
-| 3 | [GitHub Copilot でエージェントを呼び出す](labs/lab3-github-copilot/README.md) | 60min | エージェントモード、Copilot CLI、Issue → PR |
+| 1 | [Microsoft Foundry でエージェントを作る](labs/lab1-foundry-basics/lab1-foundry-basics.md) | 30min | ポータル操作のみ。エージェント作成、モデル選択、Instructions |
+| 2 | [ナレッジとマルチエージェント](labs/lab2-knowledge-and-multiagent/lab2-knowledge-and-multiagent.md) | 65min | File Search、Code Interpreter、Connected Agents |
+| 3 | [GitHub Copilot でエージェントを呼び出す](labs/lab3-github-copilot/lab3-github-copilot.md) | 60min | エージェントモード、Copilot CLI、Issue → PR |
 
 > 💡 **Lab 1 と Lab 2 はコードを書きません。** すべてブラウザ上の操作で完結します。エディタを使うのは Lab 3 からです。
 
