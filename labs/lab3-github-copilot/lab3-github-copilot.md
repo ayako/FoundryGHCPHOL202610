@@ -100,6 +100,74 @@ code .
 **✅ 成功確認:**
 - VS Code で空のフォルダが開いている
 
+### 0.4 MCP サーバーを設定する（任意）
+
+MCP（Model Context Protocol）サーバーを設定すると、Agent モードの Copilot が外部のツールや情報源を利用できます。ここでは次の 4 つを追加します。
+
+| サーバー | 用途 | 接続方式 | 認証・前提 |
+|---|---|---|---|
+| **Microsoft Learn** | 公式ドキュメントの検索。演習 1 で SDK の最新仕様を確認する際に役立ちます | HTTP（リモート） | 不要 |
+| **Azure MCP Server** | Azure リソースやロール割り当ての確認、Azure ドキュメントの参照 | `npx`（ローカル） | `az login` 済みであること。Node.js（LTS）が必要 |
+| **Foundry MCP Server**（プレビュー） | Foundry のモデル、エージェント、評価の参照・操作 | HTTP（リモート） | Microsoft Entra ID でサインイン。対象プロジェクトの Contributor 以上のロールが必要 |
+| **GitHub MCP Server** | リポジトリ、Issue、PR の参照・操作。演習 4 で使えます | HTTP（リモート） | GitHub アカウントで承認 |
+
+#### 手順
+
+1. Node.js の LTS 版が入っていることを確認する（Azure MCP Server で使用）
+
+   ```powershell
+   node --version
+   ```
+
+2. コマンドパレット（Windows／Linux: `Ctrl+Shift+P`、macOS: `Command+Shift+P`）を開き、**「MCP: Open User Configuration」** を実行する
+3. 開いた `mcp.json` に、次の内容を保存する。すでに `servers` がある場合は、足りない項目だけを追加する
+
+   ```json
+   {
+     "servers": {
+       "MSLearn": {
+         "type": "http",
+         "url": "https://learn.microsoft.com/api/mcp"
+       },
+       "AzureMCP": {
+         "type": "stdio",
+         "command": "npx",
+         "args": ["-y", "@azure/mcp@latest", "server", "start"]
+       },
+       "FoundryMCP": {
+         "type": "http",
+         "url": "https://mcp.ai.azure.com"
+       },
+       "GitHubMCP": {
+         "type": "http",
+         "url": "https://api.githubcopilot.com/mcp/"
+       }
+     }
+   }
+   ```
+
+4. 各サーバー名の上に表示される **「Start」** をクリックして起動する。信頼を確認するダイアログが表示されたら、接続先を確認して **「Trust」** を選択する
+5. `FoundryMCP` と `GitHubMCP` では、ブラウザーでのサインインや承認を求められる。Lab で使うアカウントで承認する
+6. Chat を開き、モードで **「Agent」** を選択する
+7. チャット入力欄の **「ツールの構成」**（ツールのアイコン）をクリックし、4 つのサーバーのツールが有効になっていることを確認する
+
+**✅ 成功確認:**
+- コマンドパレットの **「MCP: List Servers」** で、4 つのサーバーが **Running** と表示される
+- ツールの一覧に、各サーバーのツールが表示される
+- Agent で次のように送信すると、対応する MCP ツールの使用確認が表示される
+  - 「Microsoft Learn で azure-ai-projects の Responses API の使い方を調べて」
+  - 「Azure のサブスクリプションを一覧して」
+  - 「Foundry のプロジェクトにあるエージェントを一覧して」
+  - 「GitHub で自分のリポジトリを一覧して」
+
+> 💡 **設定の保存先**: **MCP: Open User Configuration** はすべてのワークスペースで使うユーザー設定です。特定のリポジトリだけで使う場合は、**MCP: Open Workspace Folder Configuration** で `.vscode/mcp.json` を作成します。サーバーは **MCP: Add Server** のガイドや、拡張機能ビューの `@mcp` 検索からも追加できます。
+
+> ⚠️ **MCP サーバーは信頼できるものだけを追加してください。** MCP サーバーはツールとしてコマンドや外部サービスを呼び出す場合があります。接続先と提供元を確認し、不明なサーバーは起動しないでください。組織の管理するアカウントでは、ポリシーにより MCP が制限されている場合があります。
+
+> 💡 **ツールが多いと動作が不安定になることがあります。** 演習中に Agent の応答が遅い、または意図しないツールが選ばれる場合は、ツールの構成で使わないサーバーを無効にしてください。
+
+> 🚨 **接続できない場合**: Azure MCP Server は `az login` と `npx` が使えるかを確認します。Foundry MCP Server は、サインイン先のテナントとプロジェクトのロール（Contributor 以上）を確認します。GitHub MCP Server は、組織のアカウントの場合に MCP の利用ポリシーが無効になっていないか管理者に確認します。
+
 ---
 
 ## 演習 1: エージェントモードでクライアントを生成する (20min)
