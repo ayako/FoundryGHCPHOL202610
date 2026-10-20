@@ -514,7 +514,16 @@ az login
 az account set --subscription "<サブスクリプションID>"
 ```
 
-2. リポジトリのルートで **次の PowerShell または Bash のいずれか一方**を実行する。Foundry リソース名とプロジェクト名を実際の値に置き換えてください。プロジェクトのエンドポイントが `https://<リソース名>.services.ai.azure.com/api/projects/<プロジェクト名>` であることを確認します。
+2. 実行するスクリプトを手元に用意する。演習 1.1 でリポジトリを ZIP で取得またはクローンしている場合は、[labs/lab2-knowledge-and-multiagent/script](script) フォルダにすべて入っています。
+
+   リポジトリ全体を取得していない場合は、使うスクリプトだけを次の手順で保存します。
+
+   - **ローカルの PowerShell／Bash を使う場合**: GitHub で [a2a-settings.ps1](script/a2a-settings.ps1) または [a2a-settings.sh](script/a2a-settings.sh) を開き、右上の **「Download raw file」**（ダウンロードアイコン）で保存する。4.7 で使う `permission.ps1`／`permission.sh` も同じ方法で、同じフォルダーに保存しておく
+   - **Azure Cloud Shell の Bash を使う場合**: Cloud Shell のツールバーにある **「ファイルの管理」→「アップロード」** で、ダウンロードした `.sh` ファイルをアップロードする。アップロード先はホームディレクトリで、次の手順のコマンドではパスを `bash ./a2a-settings.sh` に読み替える
+
+   > ⚠️ **PowerShell で「スクリプトの実行が無効」と表示される場合**: 現在のウィンドウだけ `Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned` を実行してから、再度スクリプトを実行します。ダウンロードしたファイルがブロックされる場合は、`Unblock-File <ファイルのパス>` を実行します。
+
+3. リポジトリのルートで **次の PowerShell または Bash のいずれか一方**を実行する。Foundry リソース名とプロジェクト名を実際の値に置き換えてください。プロジェクトのエンドポイントが `https://<リソース名>.services.ai.azure.com/api/projects/<プロジェクト名>` であることを確認します。
 
 **PowerShell（Windows で推奨）**
 
@@ -550,7 +559,7 @@ bash labs/lab2-knowledge-and-multiagent/script/a2a-settings.sh
 
 > 💡 **カードの説明は役割を明確にします**: FAQ 回答、履歴分析、報告文の起案という 3 体の役割を登録します。この設定だけでは、エージェント同士の接続や自動振り分けは行われません。また、匿名公開ではなく Microsoft Entra ID 認証が必要です。
 
-3. 各エージェントの `SUCCESS` が表示されたことを確認する。エラーで停止した場合は、エラーの内容とエージェント名・権限を確認し、解消してから再実行してください。
+4. 各エージェントの `SUCCESS` が表示されたことを確認する。エラーで停止した場合は、エラーの内容とエージェント名・権限を確認し、解消してから再実行してください。
 
 > 💡 今回使用したターミナルは、演習 4.7 でもそのまま引き続き使用します。
 
@@ -635,7 +644,7 @@ bash labs/lab2-knowledge-and-multiagent/script/a2a-settings.sh
 
 > ⚠️ **ID を取り違えないでください**: `ReceptionAgent` という名前、エージェントのリソース ID、アプリケーション（クライアント）ID ではありません。Microsoft Entra のサービスプリンシパルを識別するオブジェクト ID（GUID）を指定します。
 
-2. 演習 4.5 で使用したターミナルで、**次の PowerShell または Bash のいずれか一方**を実行する。リソース名・プロジェクト名は、**呼び出し先の専門エージェントが属するプロジェクト**の値に置き換えます。
+2. 演習 4.5 で使用したターミナルで、**次の PowerShell または Bash のいずれか一方**を実行する。スクリプトは演習 4.5 の手順 2 で用意したものを使います（Cloud Shell では `bash ./permission.sh` に読み替える）。リソース名・プロジェクト名は、**呼び出し先の専門エージェントが属するプロジェクト**の値に置き換えます。
 
 **PowerShell**
 
