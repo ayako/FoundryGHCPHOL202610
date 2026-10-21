@@ -503,69 +503,43 @@ Lab 1 の演習 1.2 と **同じ質問** を送信し、回答の違いを確認
 
 ### 4.5 A2A を設定する
 
-3 体の専門エージェントに **受信 A2A（Agent2Agent）** を有効化し、他のエージェントから発見・呼び出しできるように準備します。Foundry ポータルではまだ設定できないため、REST API を PowerShell または Bash から実行します。
+3 体の専門エージェントに **受信 A2A（Agent2Agent）** を有効化し、他のエージェントから発見・呼び出しできるように準備します。ここでは Foundry ポータルを使います。
+
+> 💡 スクリプトを使う方法は、末尾の [参考: スクリプトによる A2A 設定](#参考-スクリプトによる設定) に記載しています。
 
 #### 手順
 
-1. ターミナルで Azure にサインインし、対象サブスクリプションを選択する
+1. Foundry ポータルで `FaqAnswerAgent` を開き、**「詳細」** タブを選択する
+2. **「A2A プロトコル」** の **「有効化」** をクリックし、エージェントカードの作成画面を開く
+3. 次の内容を入力する。名前は `FaqAnswerAgent` のままにし、必須項目の説明・スキル名・スキルの説明を設定する
 
-```text
-az login
-az account set --subscription "<サブスクリプションID>"
-```
-
-2. 実行するスクリプトを手元に用意する。演習 1.1 でリポジトリを ZIP で取得またはクローンしている場合は、[labs/lab2-knowledge-and-multiagent/script](script) フォルダにすべて入っています。
-
-   リポジトリ全体を取得していない場合は、使うスクリプトだけを次の手順で保存します。
-
-   - **ローカルの PowerShell／Bash を使う場合**: GitHub で [a2a-settings.ps1](script/a2a-settings.ps1) または [a2a-settings.sh](script/a2a-settings.sh) を開き、右上の **「Download raw file」**（ダウンロードアイコン）で保存する。4.7 で使う `permission.ps1`／`permission.sh` も同じ方法で、同じフォルダーに保存しておく
-   - **Azure Cloud Shell の Bash を使う場合**: Cloud Shell のツールバーにある **「ファイルの管理」→「アップロード」** で、ダウンロードした `.sh` ファイルをアップロードする。アップロード先はホームディレクトリで、次の手順のコマンドではパスを `bash ./a2a-settings.sh` に読み替える
-
-   > ⚠️ **PowerShell で「スクリプトの実行が無効」と表示される場合**: 現在のウィンドウだけ `Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned` を実行してから、再度スクリプトを実行します。ダウンロードしたファイルがブロックされる場合は、`Unblock-File <ファイルのパス>` を実行します。
-
-3. リポジトリのルートで **次の PowerShell または Bash のいずれか一方**を実行する。Foundry リソース名とプロジェクト名を実際の値に置き換えてください。プロジェクトのエンドポイントが `https://<リソース名>.services.ai.azure.com/api/projects/<プロジェクト名>` であることを確認します。
-
-**PowerShell（Windows で推奨）**
-
-[a2a-settings.ps1](script/a2a-settings.ps1) を実行します。
-
-```powershell
-$FoundryName = "<Foundryリソース名>"
-$ProjectName = "<プロジェクト名>"
-
-.\labs\lab2-knowledge-and-multiagent\script\a2a-settings.ps1 `
-    -FOUNDRY_NAME $FoundryName `
-    -FOUNDRY_PROJECT_NAME $ProjectName
-```
-
-**Bash（Azure Cloud Shell の Bash、Git Bash、WSL など）**
-
-[a2a-settings.sh](script/a2a-settings.sh) を実行します。Bash 環境側にも Azure CLI と `curl` が必要です。
-
-```bash
-export FOUNDRY_NAME="<Foundryリソース名>"
-export FOUNDRY_PROJECT_NAME="<プロジェクト名>"
-
-bash labs/lab2-knowledge-and-multiagent/script/a2a-settings.sh
-```
-
-スクリプトは Azure CLI でアクセストークンを取得し、各エージェントに `PATCH /agents/<エージェント名>?api-version=v1` を送信します。設定内容は次のとおりです。
-
-| 設定項目 | 内容 |
+| 項目 | 入力例 |
 |------|------|
-| `agent_card` | エージェントの説明、カードのバージョン、スキルの ID・名前・説明 |
-| `agent_endpoint.protocol_configuration.responses` | Responses プロトコルを有効化（受信 A2A の前提） |
-| `agent_endpoint.protocol_configuration.a2a` | 受信 A2A を有効化 |
+| 名前 | `FaqAnswerAgent` |
+| 説明 | 製品の仕様・使い方・成分・安全性・社内手順に関する質問に答えるエージェント |
+| スキル名 | FAQ Answer |
+| スキルの説明 | 製品の仕様・使い方・成分・安全性・社内手順に関する質問に回答します |
+| サンプル プロンプト（任意） | 詰め替えの保管期限は？ |
 
-> 💡 **カードの説明は役割を明確にします**: FAQ 回答、履歴分析、報告文の起案という 3 体の役割を登録します。この設定だけでは、エージェント同士の接続や自動振り分けは行われません。また、匿名公開ではなく Microsoft Entra ID 認証が必要です。
+![](images/lab2-51.png)
 
-4. 各エージェントの `SUCCESS` が表示されたことを確認する。エラーで停止した場合は、エラーの内容とエージェント名・権限を確認し、解消してから再実行してください。
+4. **「保存」** をクリックする
+5. A2A 設定後に表示される **エンドポイント** (URL) をローカルに保存しておきます。
 
-> 💡 今回使用したターミナルは、演習 4.7 でもそのまま引き続き使用します。
+![](images/lab2-52.png)
+
+6. 残り 2 体も、それぞれの **「詳細」** タブから A2A を有効化する。各エージェントの役割に合わせて、次の内容を入力する
+
+| エージェント名 | 説明 | スキル名 | スキルの説明 |
+|------|------|------|------|
+| `HistoryAnalysisAgent` | 問い合わせ履歴データの集計・傾向分析を行うエージェント | History Analysis | 問い合わせ履歴データを集計し、傾向を分析します |
+| `DraftingAgent` | 関係部署へのエスカレーション報告文を作成するエージェント | Escalation Drafting | 問い合わせ内容をもとに関係部署へのエスカレーション報告文を作成します |
+
+> 💡 **有効化と接続は別の操作です**: ここでは各エージェントの機能をエージェントカードに登録し、受信 A2A を有効化します。受付エージェントからの接続と認証方式は、演習 4.6 で設定します。
 
 **✅ 成功確認:**
 - 各エージェント（`FaqAnswerAgent`、`HistoryAnalysisAgent`、`DraftingAgent`）の **「詳細」** タブで、**「A2A プロトコル」** が **「アクティブ」** と表示される
-- このとき表示される **「エンドポイント」**（URL）を 3 体分コピーし、ローカルに保存する
+- 各エージェントの **「エンドポイント」**（URL）が、ローカルに保存されている
 
 ![](images/lab2-36.png)
 
@@ -618,64 +592,37 @@ bash labs/lab2-knowledge-and-multiagent/script/a2a-settings.sh
 |------|------|
 | 名前 | `FaqAnswerAgent` |
 | A2A エージェントエンドポイント | `https://YOUR_FOUNDRY_NAME.services.ai.azure.com/api/projects/YOUR_FOUNDRY_PROJECT_NAME/agents/FaqAnswerAgent/endpoint/protocols/a2a` |
+| 認証 | OAuth パススルー（OAuth identity passthrough） |
 
-7. **「接続」** をクリック
+> ⚠️ この時設定する A2A の名前は、このエージェント ('ReceptionAgent') が内部で認識するための名称です。この名前の冒頭は文字である必要があります。(数字、記号は不可) **作成した エージェント ('FaqAnswerAgent') の実際の名前、IDに関わらず、ここでは 'FaqAnswerAgent' と入力します。**
+
+7. 「接続」** をクリックする。
 
 ![](images/lab2-39.png)
 
-8. 残り 2 体のエージェントについても同様に A2A エンドポイントを追加する
+8. 残り 2 体のエージェントも同様に追加する
 9. `ReceptionAgent` のプレイグラウンドで **「保存」** をクリック
-10. **「詳細」** タブをクリックし、**「Entra エージェント ID」** 欄の ID をコピーしてローカルに保存する
-
-![](images/lab2-40.png)
 
 **✅ 成功確認:**
-- `ReceptionAgent` に手順（Instructions）が設定され、ツールとして 3 体のエージェントの A2A エンドポイントが追加されている
+- `ReceptionAgent` に手順（Instructions）が設定され、ツールとして 3 体のエージェントの A2A エンドポイントが追加されている。すべての接続の認証が OAuth パススルーになっている
 
 ![](images/lab2-41.png)
 
-### 4.7 受付エージェントに権限を設定する
+### 4.7 OAuth パススルーの認証を確認する
 
-受付エージェントが専門エージェントの A2A エンドポイントを呼び出せるように、`ReceptionAgent` に **Foundry Agent Consumer** ロールを付与します。
+OAuth パススルーでは、エージェント自身の ID ではなく、**利用者がサインイン・同意したアカウントの権限**で専門エージェントを呼び出します。この手順では、`ReceptionAgent` の Entra オブジェクト ID を取得したり、その ID にロールを付与するスクリプトを実行したりする必要はありません。
 
 #### 手順
 
-1. `ReceptionAgent` の ID 情報から、呼び出しに使用するエージェント ID の **Microsoft Entra オブジェクト（プリンシパル）ID** を確認する。新しい Foundry エージェントでは `instance_identity` に指定された ID を使用します。
-
-> ⚠️ **ID を取り違えないでください**: `ReceptionAgent` という名前、エージェントのリソース ID、アプリケーション（クライアント）ID ではありません。Microsoft Entra のサービスプリンシパルを識別するオブジェクト ID（GUID）を指定します。
-
-2. 演習 4.5 で使用したターミナルで、**次の PowerShell または Bash のいずれか一方**を実行する。スクリプトは演習 4.5 の手順 2 で用意したものを使います（Cloud Shell では `bash ./permission.sh` に読み替える）。リソース名・プロジェクト名は、**呼び出し先の専門エージェントが属するプロジェクト**の値に置き換えます。
-
-**PowerShell**
-
-[permission.ps1](script/permission.ps1) を実行します。
-
-```powershell
-.\labs\lab2-knowledge-and-multiagent\script\permission.ps1 `
-    -FOUNDRY_NAME "<Foundryリソース名>" `
-    -FOUNDRY_PROJECT_NAME "<プロジェクト名>" `
-    -CALLER_AGENT_OBJECT_ID "<ReceptionAgentのEntraオブジェクトID>"
-```
-
-**Bash**
-
-[permission.sh](script/permission.sh) を実行します。
-
-```bash
-export FOUNDRY_NAME="<Foundryリソース名>"
-export FOUNDRY_PROJECT_NAME="<プロジェクト名>"
-export CALLER_AGENT_OBJECT_ID="<ReceptionAgentのEntraオブジェクトID>"
-
-bash labs/lab2-knowledge-and-multiagent/script/permission.sh
-```
-
-スクリプトは選択中のサブスクリプションから Foundry リソースを取得し、対象プロジェクトのスコープで `Foundry Agent Consumer`（ロール ID: `eed3b665-ab3a-47b6-8f48-c9382fb1dad6`）を割り当てます。これにより、受付エージェントはそのプロジェクト内のエージェントエンドポイントへアクセスできるようになります。
+1. 利用するアカウントが、受付エージェントと接続先の専門エージェントにアクセスできることを確認する。利用者向けの最小権限は、対象プロジェクトまたはエージェントの **Foundry Agent Consumer** です。エージェントを作成するための **Foundry User** ロールでも利用できます
+2. `ReceptionAgent` のプレイグラウンドで「詰め替えの保管期限は？」と送信する
+3. 初回の呼び出しで認証・同意のリンクが表示されたら開き、Lab で使用するアカウントでサインインする。要求されるアクセス許可を確認して同意する
+4. プレイグラウンドに戻り、同じ質問を再送信する。残りの専門エージェントも、演習 4.8 で呼び出したときに同意を求められたら同様に対応する
 
 **✅ 成功確認:**
-- ロール割り当ての結果と `SUCCESS: Foundry Agent Consumer assigned.` が表示される
+- 必要な認証・同意を完了し、`FaqAnswerAgent` からの回答が返る
 
-> 💡 **権限の反映には時間がかかる場合があります。** 割り当て直後に 403 が出る場合は、反映を待ってから再確認してください。
-
+> ⚠️ **OAuth パススルーは匿名アクセスではありません。** 利用者自身に接続先へのアクセス権が必要です。権限が不足する場合は管理者に確認してください。すでに同意済みの場合、同意リンクが再表示されないことがあります。
 
 ### 4.8 振り分けをテストする
 
@@ -734,8 +681,8 @@ bash labs/lab2-knowledge-and-multiagent/script/permission.sh
 | ナレッジの矛盾が回答を揺らすことを体感した | — |
 | 200 件のデータを集計・可視化させた | コード インタープリター |
 | 役割ごとに 3 体のエージェントを作った | エージェント |
-| 専門エージェントの受信 A2A を有効化した | REST API、エージェントカード |
-| 受付役から専門エージェントを呼び出した | A2A |
+| 専門エージェントの受信 A2A を有効化した | Foundry ポータル、エージェントカード |
+| 受付役から専門エージェントを呼び出した | A2A、OAuth パススルー |
 
 **この Lab で分かったこと:**
 
@@ -749,6 +696,7 @@ bash labs/lab2-knowledge-and-multiagent/script/permission.sh
 - [ファイル検索（File Search）](https://learn.microsoft.com/ja-jp/azure/ai-foundry/agents/how-to/tools/file-search)
 - [コード インタープリター](https://learn.microsoft.com/ja-jp/azure/ai-foundry/agents/how-to/tools/code-interpreter)
 - [受信 A2A の有効化とアクセス権の設定](https://learn.microsoft.com/azure/foundry/agents/how-to/enable-agent-to-agent-endpoint)
+- [A2A の認証と OAuth パススルー](https://learn.microsoft.com/azure/foundry/agents/concepts/agent-to-agent-authentication)
 
 ---
 
@@ -822,18 +770,19 @@ bash labs/lab2-knowledge-and-multiagent/script/permission.sh
 **確認すること:**
 1. 先に演習 4.5 を完了し、接続先エージェントの **「A2A プロトコル」** が **「アクティブ」** になっているか確認する
 2. エンドポイント URL に、Foundry リソース名・プロジェクト名・接続先エージェント名が正しく含まれているか確認する。`/projects/` の後や URL 内に空白がないことも確認する
-3. URL の末尾が `/agents/<エージェント名>/endpoint/protocols/a2a` であることを確認する。エージェントカードの URL（`/agentCard/v1.0`）は接続先 URL に使わない
+3. URL の末尾が `/agents/<エージェント名>/endpoint/protocols/a2a` であることを確認する。
 4. 接続先エージェントと `ReceptionAgent` が、同じ Foundry プロジェクトにあることを確認する
 
 #### 接続はできるが、呼び出し時に `401` または `403` になる
 
-**原因**: 認証トークンがない・無効、または呼び出し元に接続先エンドポイントへの権限がありません。
+**原因**: OAuth パススルーの認証・同意が未完了、または利用者に接続先エンドポイントへの権限がありません。
 
 **解決方法:**
 1. 接続先エージェントの A2A が有効であることを確認する
-2. 演習 4.7 で、呼び出し元である `ReceptionAgent` の **Entra オブジェクト（プリンシパル）ID** に `Foundry Agent Consumer` が割り当てられているか確認する。エージェント名、エージェント ID、アプリケーション（クライアント）ID を指定していないか確認する
-3. ロール付与直後の場合は反映を待ち、新しい要求で再試行する
-4. ロール割り当てに失敗している場合、操作ユーザーに対象スコープでロール割り当てを行う権限があるか確認する
+2. 演習 4.6 の 3 つの接続で、認証に **OAuth パススルー** が選択されているか確認する
+3. 演習 4.7 の認証・同意を完了してから再送信する。サインインしたアカウントとテナントが正しいかも確認する
+4. 利用者自身が、受付と接続先のプロジェクトまたはエージェントにアクセスできるか確認する。権限不足の場合は管理者に確認し、付与直後であれば反映を待つ
+5. 参考手順の **Microsoft Entra エージェント ID** 認証を意図的に使っている場合に限り、呼び出し元エージェントのプリンシパルに対するロール割り当てを確認する
 
 #### 接続後に応答が返らない、または `404` になる
 
@@ -844,3 +793,89 @@ bash labs/lab2-knowledge-and-multiagent/script/permission.sh
 4. A2A の接続名が `ReceptionAgent` の手順（Instructions）内で使っている名前と一致しているか確認する
 
 > 💡 エラーの HTTP ステータスや応答本文を記録し、URL・エージェント名・ロール割り当てを一つずつ確認してください。アクセストークンなどの認証情報はログや共有資料に貼り付けないでください。
+
+---
+
+## 参考: スクリプトによる A2A 設定
+
+Foundry ポータル操作の代わりに、REST API で受信 A2A を有効化する方法です。A2A 接続の認証に **Entra ID エージェントID** を使用したい場合、こちらの方法で設定します。
+
+### スクリプトを用意する
+
+演習 1.1 でリポジトリを ZIP で取得またはクローンしている場合は、[script](script) フォルダーに入っています。
+
+個別に取得する場合は、GitHub で [a2a-settings.ps1](script/a2a-settings.ps1) または [a2a-settings.sh](script/a2a-settings.sh) を開き、右上の **「Download raw file」**（ダウンロードアイコン）で保存します。
+
+- **ローカルで実行する場合**: ターミナルをリポジトリのルートで開く。個別にダウンロードした場合は保存先フォルダーで開き、下記のパスを `.\a2a-settings.ps1` または `bash ./a2a-settings.sh` に読み替える
+- **Azure Cloud Shell の Bash を使う場合**: ダウンロードした `.sh` ファイルを、Cloud Shell のツールバーの **「ファイルの管理」→「アップロード」** でアップロードし、下記の実行パスを `bash ./a2a-settings.sh` に読み替える
+
+> ⚠️ **PowerShell で実行がブロックされる場合**: スクリプトの内容と提供元を確認してから `Unblock-File <ファイルのパス>` を実行してください。実行ポリシーで禁止されている場合は、組織の方針に従ってください。変更が許可されている環境では、現在のウィンドウに限り `Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned` を使用できます。
+
+### 受信 A2A を有効化する
+
+1. ローカルのターミナルでは `az login` でサインインする（Cloud Shell はサインイン済み）
+2. `az account set --subscription "<サブスクリプションID>"` で対象を選択する
+3. 次の **PowerShell または Bash のいずれか一方**を実行する。リソース名とプロジェクト名は実際の値に置き換える
+
+**PowerShell**
+
+```powershell
+.\labs\lab2-knowledge-and-multiagent\script\a2a-settings.ps1 `
+    -FOUNDRY_NAME "<Foundryリソース名>" `
+    -FOUNDRY_PROJECT_NAME "<プロジェクト名>"
+```
+
+**Bash**（Azure CLI と `curl` が必要）
+
+```bash
+export FOUNDRY_NAME="<Foundryリソース名>"
+export FOUNDRY_PROJECT_NAME="<プロジェクト名>"
+
+bash labs/lab2-knowledge-and-multiagent/script/a2a-settings.sh
+```
+
+スクリプトは Azure CLI でアクセストークンを取得し、3 体の専門エージェントに `PATCH /agents/<エージェント名>?api-version=v1` を送信します。
+
+| 設定項目 | 内容 |
+|------|------|
+| `agent_card` | エージェントの説明、カードのバージョン、スキルの ID・名前・説明 |
+| `agent_endpoint.protocol_configuration.responses` | Responses プロトコルを有効化 |
+| `agent_endpoint.protocol_configuration.a2a` | 受信 A2A を有効化 |
+
+各エージェントの `SUCCESS` が表示されることを確認してください。エラーで停止した場合は内容を確認して解消し、再実行します。続けて、演習 4.5 の成功確認と同様に **「A2A プロトコル」** が **「アクティブ」** であることを確認し、3 体のエンドポイントを保存します。
+
+### Microsoft Entra エージェント ID 認証を使う場合のみ: 権限の付与
+
+接続の認証を **Microsoft Entra エージェント ID** にする場合は、呼び出し元の `ReceptionAgent` に **Foundry Agent Consumer** ロールを付与します。
+
+1. `ReceptionAgent` の ID 情報から、`instance_identity` に指定された ID の **Microsoft Entra オブジェクト（プリンシパル）ID** を確認する。エージェント名、エージェントリソース ID、アプリケーション（クライアント）ID ではなく、サービスプリンシパルのオブジェクト ID（GUID）を使う
+2. [permission.ps1](script/permission.ps1) または [permission.sh](script/permission.sh) を、上記と同じダウンロード手順で用意する
+3. サインイン済みのターミナルで、次のいずれかを実行する。リソース名とプロジェクト名は、**接続先の専門エージェントが属するプロジェクト**の値を指定する
+
+**PowerShell**
+
+```powershell
+.\labs\lab2-knowledge-and-multiagent\script\permission.ps1 `
+    -FOUNDRY_NAME "<Foundryリソース名>" `
+    -FOUNDRY_PROJECT_NAME "<プロジェクト名>" `
+    -CALLER_AGENT_OBJECT_ID "<ReceptionAgentのEntraオブジェクトID>"
+```
+
+**Bash**
+
+```bash
+export FOUNDRY_NAME="<Foundryリソース名>"
+export FOUNDRY_PROJECT_NAME="<プロジェクト名>"
+export CALLER_AGENT_OBJECT_ID="<ReceptionAgentのEntraオブジェクトID>"
+
+bash labs/lab2-knowledge-and-multiagent/script/permission.sh
+```
+
+個別ダウンロードの場合は `.\permission.ps1` または `bash ./permission.sh` に読み替えます。Cloud Shell の場合は `.sh` をアップロードしてから `bash ./permission.sh` を使ってください。
+
+スクリプトは選択中のサブスクリプションから Foundry リソースを取得し、対象プロジェクトのスコープで `Foundry Agent Consumer`（ロール ID: `eed3b665-ab3a-47b6-8f48-c9382fb1dad6`）を割り当てます。実行するユーザーには、対象スコープでロールを割り当てる権限が必要です。
+
+**✅ 成功確認:**
+- ロール割り当ての結果と `SUCCESS: Foundry Agent Consumer assigned.` が表示される
+
+> 💡 **権限の反映には時間がかかる場合があります。** 割り当て直後に 403 が出る場合は、反映を待ってから再確認してください。
