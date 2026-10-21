@@ -119,8 +119,8 @@ MCP（Model Context Protocol）サーバーを設定すると、Agent モード�
    node --version
    ```
 
-2. コマンドパレット（Windows／Linux: `Ctrl+Shift+P`、macOS: `Command+Shift+P`）を開き、**「MCP: Open User Configuration」** を実行する
-3. 開いた `mcp.json` に、次の内容を保存する。すでに `servers` がある場合は、足りない項目だけを追加する
+2. コマンドパレット（Windows／Linux: `Ctrl+Shift+P`、macOS: `Command+Shift+P`）を開き、**「MCP: ユーザー構成を開く** (Open User Configuration) **」** を実行する
+3. 開いた `mcp.json` に、次の内容を記載、保存する。すでに `servers` がある場合は、足りない項目だけを追加する
 
    ```json
    {
@@ -160,7 +160,7 @@ MCP（Model Context Protocol）サーバーを設定すると、Agent モード�
   - 「Foundry のプロジェクトにあるエージェントを一覧して」
   - 「GitHub で自分のリポジトリを一覧して」
 
-> 💡 **設定の保存先**: **MCP: Open User Configuration** はすべてのワークスペースで使うユーザー設定です。特定のリポジトリだけで使う場合は、**MCP: Open Workspace Folder Configuration** で `.vscode/mcp.json` を作成します。サーバーは **MCP: Add Server** のガイドや、拡張機能ビューの `@mcp` 検索からも追加できます。
+> 💡 **設定の保存先**: **MCP: ユーザー構成を開く** ではすべてのワークスペースで使うユーザー設定を開いています。特定のリポジトリだけで使う場合は、**MCP: ワークスペースフォルダーMCP構成を開く** (Open Workspace Folder MCP Configuration) で `.vscode/mcp.json` を作成します。サーバーは **MCP: Add Server** のガイドや、拡張機能ビューの `@mcp` 検索からも追加できます。
 
 > ⚠️ **MCP サーバーは信頼できるものだけを追加してください。** MCP サーバーはツールとしてコマンドや外部サービスを呼び出す場合があります。接続先と提供元を確認し、不明なサーバーは起動しないでください。組織の管理するアカウントでは、ポリシーにより MCP が制限されている場合があります。
 
@@ -620,3 +620,9 @@ python -m pip install -r requirements.txt
 1. 1 分ほど待つ
 2. 切り分けのため、環境変数 `FOUNDRY_AGENT_NAME` を `FaqAnswerAgent` に変更して試す
 3. それで速ければ、マルチエージェント構成による遅延です（正常な挙動です）
+
+---
+
+## 演習 1・2 の実行結果例
+
+演習 1・2 で作成する CLI クライアントとテストコードの実行結果例を、[cli-client](./cli-client/) フォルダーに用意しています。実行方法は [サンプルの README](./cli-client/README.md) を参照してください。

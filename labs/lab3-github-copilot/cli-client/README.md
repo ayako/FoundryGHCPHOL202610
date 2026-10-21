@@ -10,7 +10,7 @@ classic API のエージェント ID、threads、runs は使用しません。
 - Python 3.10 以降。
 - Microsoft Foundry のプロジェクトと、その中に作成済みの `ReceptionAgent`。
 - プロジェクトにアクセスできる Microsoft Entra ID アカウントと適切なロール。
-- ローカル認証に Azure CLI を使う場合は、Azure CLI のインストールと `az login`。
+- ローカル認証に Azure CLI を使う場合は、[Azure CLI のインストール](https://learn.microsoft.com/ja-jp/cli/azure/install-azure-cli?view=azure-cli-latest)と `az login`。
   認証には `DefaultAzureCredential` が使用できるほかの認証方法も利用できます。
 
 ## セットアップと実行（PowerShell）
